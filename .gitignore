@@ -1,40 +1,34 @@
-# Rust / Cargo
-target/
-**/*.rs.bk
-debug/
-release/
 
-# Node / Web
-node_modules/
-dist/
+# Build Artifacts
+/target
+/dist
+/build
+/node_modules
+**/*.enc
+**/*.log
+
+# Mobile Builds
+*.apk
+*.aab
+*.ipa
+*.dSYM
+
+# OS
 .DS_Store
 Thumbs.db
 
-# Tauri
-src-tauri/target/
-src-tauri/gen/
-**/.tauri/
+# Editor
+.vscode
+.idea
+*.swp
 
-# Environment / Secrets
+# Environment
 .env
-*.env
-security.enc
-security_pentest.enc
+.env.local
 *.key
 *.pem
+*.keystore
+*.jks
 
-# IDEs
-.vscode/
-.idea/
-*.iml
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-pnpm-debug.log*
-
-# ComLock Specific
-brain/
-UX Design.md
-Implementation-plan.md
-Rust Implementation of KEM Braid.md
+# Ignore Nested Landing Page Repo
+comlock-landing/
