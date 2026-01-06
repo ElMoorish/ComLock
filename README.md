@@ -69,11 +69,11 @@ ComLock is built with a "paranoia-first" mindset.
 -   **Memory Safety**: All keys are zeroized on drop.
 -   **Storage**: AES-256-GCM encrypted local storage PIN-protected.
 
-##  For Donation :
+##  Donation 
 
-BTC : 17ospCx6MbNQfqETd1UjAQQSus8ENHXgnh
+BTC: 17ospCx6MbNQfqETd1UjAQQSus8ENHXgnh
 
-BNB : 0x92526bbd4a02baeaedda62208e4c485d852ef66d
+BNB: 0x92526bbd4a02baeaedda62208e4c485d852ef66d
 ---
 
 *(c) 2026 ComLock Project*
