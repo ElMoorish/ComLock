@@ -21,7 +21,7 @@
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/your-org/comlock.git
+    git clone https://github.com/elmoorish/comlock.git
     cd comlock/comlock-app
     ```
 
