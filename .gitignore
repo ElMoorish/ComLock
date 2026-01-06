@@ -1,0 +1,40 @@
+# Rust / Cargo
+target/
+**/*.rs.bk
+debug/
+release/
+
+# Node / Web
+node_modules/
+dist/
+.DS_Store
+Thumbs.db
+
+# Tauri
+src-tauri/target/
+src-tauri/gen/
+**/.tauri/
+
+# Environment / Secrets
+.env
+*.env
+security.enc
+security_pentest.enc
+*.key
+*.pem
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# ComLock Specific
+brain/
+UX Design.md
+Implementation-plan.md
+Rust Implementation of KEM Braid.md
