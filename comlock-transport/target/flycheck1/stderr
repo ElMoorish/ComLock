@@ -1,0 +1,780 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   0.106709000s  INFO prepare_target{force=false package_id=comlock-transport v0.1.0 (C:\Users\aitsi\ComLock\comlock-transport) target="comlock_transport"}: cargo::core::compiler::fingerprint: stale: missing "C:\\Users\\aitsi\\ComLock\\comlock-transport\\target\\debug\\.fingerprint\\universal-hash-607888b60494ec2a\\dep-lib-universal_hash"
+   0.111338400s  INFO prepare_target{force=false package_id=comlock-transport v0.1.0 (C:\Users\aitsi\ComLock\comlock-transport) target="comlock_transport"}: cargo::core::compiler::fingerprint: stale: missing "C:\\Users\\aitsi\\ComLock\\comlock-transport\\target\\debug\\.fingerprint\\x25519-dalek-6239696b93e13330\\dep-lib-x25519_dalek"
+   0.113984100s  INFO prepare_target{force=false package_id=comlock-transport v0.1.0 (C:\Users\aitsi\ComLock\comlock-transport) target="comlock_transport"}: cargo::core::compiler::fingerprint: fingerprint error for comlock-transport v0.1.0 (C:\Users\aitsi\ComLock\comlock-transport)/Check { test: false }/TargetInner { ..: lib_target("comlock_transport", ["lib"], "C:\\Users\\aitsi\\ComLock\\comlock-transport\\src\\lib.rs", Edition2024) }
+   0.114025800s  INFO prepare_target{force=false package_id=comlock-transport v0.1.0 (C:\Users\aitsi\ComLock\comlock-transport) target="comlock_transport"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\comlock-transport-4ec1759db99d1c26\lib-comlock_transport`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.124887600s  INFO prepare_target{force=false package_id=aes-gcm v0.10.3 target="aes_gcm"}: cargo::core::compiler::fingerprint: fingerprint error for aes-gcm v0.10.3/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("aes_gcm", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\aes-gcm-0.10.3\\src\\lib.rs", Edition2021) }
+   0.124916600s  INFO prepare_target{force=false package_id=aes-gcm v0.10.3 target="aes_gcm"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\aes-gcm-43ba9ec5bd8eaf07\lib-aes_gcm`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_libgit2_prerelease
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: git_midx_writer_dump
+  18: git_filter_source_repo
+  19: git_midx_writer_dump
+  20: BaseThreadInitThunk
+  21: RtlUserThreadStart
+   0.128390300s  INFO prepare_target{force=false package_id=aes v0.8.4 target="aes"}: cargo::core::compiler::fingerprint: fingerprint error for aes v0.8.4/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("aes", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\aes-0.8.4\\src\\lib.rs", Edition2021) }
+   0.128415400s  INFO prepare_target{force=false package_id=aes v0.8.4 target="aes"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\aes-d66378457e394ba9\lib-aes`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_libgit2_prerelease
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: <unknown>
+  18: git_midx_writer_dump
+  19: git_filter_source_repo
+  20: git_midx_writer_dump
+  21: BaseThreadInitThunk
+  22: RtlUserThreadStart
+   0.128893200s  INFO prepare_target{force=false package_id=cipher v0.4.4 target="cipher"}: cargo::core::compiler::fingerprint: fingerprint error for cipher v0.4.4/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("cipher", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cipher-0.4.4\\src\\lib.rs", Edition2021) }
+   0.128911300s  INFO prepare_target{force=false package_id=cipher v0.4.4 target="cipher"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\cipher-ce55dc902db4cf8e\lib-cipher`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_filter_source_repo
+  14: git_libgit2_prerelease
+  15: <unknown>
+  16: <unknown>
+  17: <unknown>
+  18: <unknown>
+  19: git_midx_writer_dump
+  20: git_filter_source_repo
+  21: git_midx_writer_dump
+  22: BaseThreadInitThunk
+  23: RtlUserThreadStart
+   0.130013600s  INFO prepare_target{force=false package_id=ctr v0.9.2 target="ctr"}: cargo::core::compiler::fingerprint: fingerprint error for ctr v0.9.2/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("ctr", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\ctr-0.9.2\\src\\lib.rs", Edition2021) }
+   0.130031700s  INFO prepare_target{force=false package_id=ctr v0.9.2 target="ctr"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\ctr-28cdb13b868d106c\lib-ctr`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_libgit2_prerelease
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: <unknown>
+  18: git_midx_writer_dump
+  19: git_filter_source_repo
+  20: git_midx_writer_dump
+  21: BaseThreadInitThunk
+  22: RtlUserThreadStart
+   0.130426600s  INFO prepare_target{force=false package_id=ghash v0.5.1 target="ghash"}: cargo::core::compiler::fingerprint: fingerprint error for ghash v0.5.1/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("ghash", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\ghash-0.5.1\\src\\lib.rs", Edition2021) }
+   0.130448800s  INFO prepare_target{force=false package_id=ghash v0.5.1 target="ghash"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\ghash-640b5d858fdee753\lib-ghash`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_libgit2_prerelease
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: <unknown>
+  18: git_midx_writer_dump
+  19: git_filter_source_repo
+  20: git_midx_writer_dump
+  21: BaseThreadInitThunk
+  22: RtlUserThreadStart
+   0.130983000s  INFO prepare_target{force=false package_id=polyval v0.6.2 target="polyval"}: cargo::core::compiler::fingerprint: fingerprint error for polyval v0.6.2/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("polyval", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\polyval-0.6.2\\src\\lib.rs", Edition2021) }
+   0.130999000s  INFO prepare_target{force=false package_id=polyval v0.6.2 target="polyval"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\polyval-c8fcea57c5070a48\lib-polyval`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_filter_source_repo
+  14: git_libgit2_prerelease
+  15: <unknown>
+  16: <unknown>
+  17: <unknown>
+  18: <unknown>
+  19: git_midx_writer_dump
+  20: git_filter_source_repo
+  21: git_midx_writer_dump
+  22: BaseThreadInitThunk
+  23: RtlUserThreadStart
+   0.131449500s  INFO prepare_target{force=false package_id=universal-hash v0.5.1 target="universal_hash"}: cargo::core::compiler::fingerprint: fingerprint error for universal-hash v0.5.1/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("universal_hash", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\universal-hash-0.5.1\\src\\lib.rs", Edition2021) }
+   0.131465600s  INFO prepare_target{force=false package_id=universal-hash v0.5.1 target="universal_hash"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\universal-hash-607888b60494ec2a\lib-universal_hash`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_filter_source_repo
+  14: git_filter_source_repo
+  15: git_libgit2_prerelease
+  16: <unknown>
+  17: <unknown>
+  18: <unknown>
+  19: <unknown>
+  20: git_midx_writer_dump
+  21: git_filter_source_repo
+  22: git_midx_writer_dump
+  23: BaseThreadInitThunk
+  24: RtlUserThreadStart
+   0.131977900s  INFO prepare_target{force=false package_id=bincode v1.3.3 target="bincode"}: cargo::core::compiler::fingerprint: fingerprint error for bincode v1.3.3/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("bincode", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\bincode-1.3.3\\src\\lib.rs", Edition2015) }
+   0.131993700s  INFO prepare_target{force=false package_id=bincode v1.3.3 target="bincode"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\bincode-e1ee4643f1c4832f\lib-bincode`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_libgit2_prerelease
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: git_midx_writer_dump
+  18: git_filter_source_repo
+  19: git_midx_writer_dump
+  20: BaseThreadInitThunk
+  21: RtlUserThreadStart
+   0.132363900s  INFO prepare_target{force=false package_id=serde v1.0.228 target="serde"}: cargo::core::compiler::fingerprint: fingerprint error for serde v1.0.228/Check { test: false }/TargetInner { ..: lib_target("serde", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\serde-1.0.228\\src\\lib.rs", Edition2021) }
+   0.132380000s  INFO prepare_target{force=false package_id=serde v1.0.228 target="serde"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\serde-3972742004dcea6a\lib-serde`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_libgit2_prerelease
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: <unknown>
+  18: git_midx_writer_dump
+  19: git_filter_source_repo
+  20: git_midx_writer_dump
+  21: BaseThreadInitThunk
+  22: RtlUserThreadStart
+   0.137802000s  INFO prepare_target{force=false package_id=comlock-crypto v0.1.0 (C:\Users\aitsi\ComLock\comlock-crypto) target="comlock_crypto"}: cargo::core::compiler::fingerprint: fingerprint error for comlock-crypto v0.1.0 (C:\Users\aitsi\ComLock\comlock-crypto)/Check { test: false }/TargetInner { ..: lib_target("comlock_crypto", ["lib"], "C:\\Users\\aitsi\\ComLock\\comlock-crypto\\src\\lib.rs", Edition2024) }
+   0.137836800s  INFO prepare_target{force=false package_id=comlock-crypto v0.1.0 (C:\Users\aitsi\ComLock\comlock-crypto) target="comlock_crypto"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\comlock-crypto-e2d5821ee5db6c96\lib-comlock_crypto`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_libgit2_prerelease
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: git_midx_writer_dump
+  18: git_filter_source_repo
+  19: git_midx_writer_dump
+  20: BaseThreadInitThunk
+  21: RtlUserThreadStart
+   0.138678700s  INFO prepare_target{force=false package_id=aes-gcm-siv v0.11.1 target="aes_gcm_siv"}: cargo::core::compiler::fingerprint: fingerprint error for aes-gcm-siv v0.11.1/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("aes_gcm_siv", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\aes-gcm-siv-0.11.1\\src\\lib.rs", Edition2021) }
+   0.138697900s  INFO prepare_target{force=false package_id=aes-gcm-siv v0.11.1 target="aes_gcm_siv"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\aes-gcm-siv-12b786da68818566\lib-aes_gcm_siv`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_libgit2_prerelease
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: <unknown>
+  18: git_midx_writer_dump
+  19: git_filter_source_repo
+  20: git_midx_writer_dump
+  21: BaseThreadInitThunk
+  22: RtlUserThreadStart
+   0.139571200s  INFO prepare_target{force=false package_id=hkdf v0.12.4 target="hkdf"}: cargo::core::compiler::fingerprint: fingerprint error for hkdf v0.12.4/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("hkdf", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\hkdf-0.12.4\\src\\lib.rs", Edition2018) }
+   0.139588400s  INFO prepare_target{force=false package_id=hkdf v0.12.4 target="hkdf"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\hkdf-0dad37cfb1036267\lib-hkdf`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_libgit2_prerelease
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: <unknown>
+  18: git_midx_writer_dump
+  19: git_filter_source_repo
+  20: git_midx_writer_dump
+  21: BaseThreadInitThunk
+  22: RtlUserThreadStart
+   0.139944500s  INFO prepare_target{force=false package_id=hmac v0.12.1 target="hmac"}: cargo::core::compiler::fingerprint: fingerprint error for hmac v0.12.1/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("hmac", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\hmac-0.12.1\\src\\lib.rs", Edition2018) }
+   0.139960200s  INFO prepare_target{force=false package_id=hmac v0.12.1 target="hmac"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\hmac-d90f2670cddfbf96\lib-hmac`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_filter_source_repo
+  14: git_libgit2_prerelease
+  15: <unknown>
+  16: <unknown>
+  17: <unknown>
+  18: <unknown>
+  19: git_midx_writer_dump
+  20: git_filter_source_repo
+  21: git_midx_writer_dump
+  22: BaseThreadInitThunk
+  23: RtlUserThreadStart
+   0.140331000s  INFO prepare_target{force=false package_id=digest v0.10.7 target="digest"}: cargo::core::compiler::fingerprint: fingerprint error for digest v0.10.7/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("digest", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\digest-0.10.7\\src\\lib.rs", Edition2018) }
+   0.140347200s  INFO prepare_target{force=false package_id=digest v0.10.7 target="digest"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\digest-93f424d297e6ab7d\lib-digest`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_filter_source_repo
+  14: git_filter_source_repo
+  15: git_libgit2_prerelease
+  16: <unknown>
+  17: <unknown>
+  18: <unknown>
+  19: <unknown>
+  20: git_midx_writer_dump
+  21: git_filter_source_repo
+  22: git_midx_writer_dump
+  23: BaseThreadInitThunk
+  24: RtlUserThreadStart
+   0.141758000s  INFO prepare_target{force=false package_id=rand v0.8.5 target="rand"}: cargo::core::compiler::fingerprint: fingerprint error for rand v0.8.5/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("rand", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\rand-0.8.5\\src\\lib.rs", Edition2018) }
+   0.141779700s  INFO prepare_target{force=false package_id=rand v0.8.5 target="rand"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\rand-aed08b7d39a92703\lib-rand`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_libgit2_prerelease
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: <unknown>
+  18: git_midx_writer_dump
+  19: git_filter_source_repo
+  20: git_midx_writer_dump
+  21: BaseThreadInitThunk
+  22: RtlUserThreadStart
+   0.142231400s  INFO prepare_target{force=false package_id=rand_chacha v0.3.1 target="rand_chacha"}: cargo::core::compiler::fingerprint: fingerprint error for rand_chacha v0.3.1/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("rand_chacha", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\rand_chacha-0.3.1\\src\\lib.rs", Edition2018) }
+   0.142250200s  INFO prepare_target{force=false package_id=rand_chacha v0.3.1 target="rand_chacha"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\rand_chacha-6e2d8d44bd9e17df\lib-rand_chacha`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_filter_source_repo
+  14: git_libgit2_prerelease
+  15: <unknown>
+  16: <unknown>
+  17: <unknown>
+  18: <unknown>
+  19: git_midx_writer_dump
+  20: git_filter_source_repo
+  21: git_midx_writer_dump
+  22: BaseThreadInitThunk
+  23: RtlUserThreadStart
+   0.142671800s  INFO prepare_target{force=false package_id=ppv-lite86 v0.2.21 target="ppv_lite86"}: cargo::core::compiler::fingerprint: fingerprint error for ppv-lite86 v0.2.21/Check { test: false }/TargetInner { ..: lib_target("ppv_lite86", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\ppv-lite86-0.2.21\\src\\lib.rs", Edition2021) }
+   0.142685900s  INFO prepare_target{force=false package_id=ppv-lite86 v0.2.21 target="ppv_lite86"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\ppv-lite86-664d1b726c0d7df7\lib-ppv_lite86`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_filter_source_repo
+  14: git_filter_source_repo
+  15: git_libgit2_prerelease
+  16: <unknown>
+  17: <unknown>
+  18: <unknown>
+  19: <unknown>
+  20: git_midx_writer_dump
+  21: git_filter_source_repo
+  22: git_midx_writer_dump
+  23: BaseThreadInitThunk
+  24: RtlUserThreadStart
+   0.144255900s  INFO prepare_target{force=false package_id=sha2 v0.10.9 target="sha2"}: cargo::core::compiler::fingerprint: fingerprint error for sha2 v0.10.9/Check { test: false }/TargetInner { ..: lib_target("sha2", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\sha2-0.10.9\\src\\lib.rs", Edition2018) }
+   0.144273700s  INFO prepare_target{force=false package_id=sha2 v0.10.9 target="sha2"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\sha2-b2550c1bc9fd297f\lib-sha2`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_libgit2_prerelease
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: <unknown>
+  18: git_midx_writer_dump
+  19: git_filter_source_repo
+  20: git_midx_writer_dump
+  21: BaseThreadInitThunk
+  22: RtlUserThreadStart
+   0.145555700s  INFO prepare_target{force=false package_id=x25519-dalek v2.0.1 target="x25519_dalek"}: cargo::core::compiler::fingerprint: fingerprint error for x25519-dalek v2.0.1/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("x25519_dalek", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\x25519-dalek-2.0.1\\src\\lib.rs", Edition2021) }
+   0.145570100s  INFO prepare_target{force=false package_id=x25519-dalek v2.0.1 target="x25519_dalek"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\x25519-dalek-6239696b93e13330\lib-x25519_dalek`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_libgit2_prerelease
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: <unknown>
+  18: git_midx_writer_dump
+  19: git_filter_source_repo
+  20: git_midx_writer_dump
+  21: BaseThreadInitThunk
+  22: RtlUserThreadStart
+   0.147427500s  INFO prepare_target{force=false package_id=rand_distr v0.4.3 target="rand_distr"}: cargo::core::compiler::fingerprint: fingerprint error for rand_distr v0.4.3/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("rand_distr", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\rand_distr-0.4.3\\src\\lib.rs", Edition2018) }
+   0.147446700s  INFO prepare_target{force=false package_id=rand_distr v0.4.3 target="rand_distr"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\rand_distr-4df15a1a4344b0c3\lib-rand_distr`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_libgit2_prerelease
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: git_midx_writer_dump
+  18: git_filter_source_repo
+  19: git_midx_writer_dump
+  20: BaseThreadInitThunk
+  21: RtlUserThreadStart
+   0.149803800s  INFO prepare_target{force=false package_id=tokio v1.49.0 target="tokio"}: cargo::core::compiler::fingerprint: fingerprint error for tokio v1.49.0/Check { test: false }/TargetInner { ..: lib_target("tokio", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\tokio-1.49.0\\src\\lib.rs", Edition2021) }
+   0.149819300s  INFO prepare_target{force=false package_id=tokio v1.49.0 target="tokio"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\tokio-1d50ae66db6900b0\lib-tokio`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_libgit2_prerelease
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: git_midx_writer_dump
+  18: git_filter_source_repo
+  19: git_midx_writer_dump
+  20: BaseThreadInitThunk
+  21: RtlUserThreadStart
+   0.152705500s  INFO prepare_target{force=false package_id=comlock-transport v0.1.0 (C:\Users\aitsi\ComLock\comlock-transport) target="comlock_transport"}: cargo::core::compiler::fingerprint: fingerprint error for comlock-transport v0.1.0 (C:\Users\aitsi\ComLock\comlock-transport)/Check { test: true }/TargetInner { ..: lib_target("comlock_transport", ["lib"], "C:\\Users\\aitsi\\ComLock\\comlock-transport\\src\\lib.rs", Edition2024) }
+   0.152729300s  INFO prepare_target{force=false package_id=comlock-transport v0.1.0 (C:\Users\aitsi\ComLock\comlock-transport) target="comlock_transport"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\comlock-transport-3645dfec9b514d1d\test-lib-comlock_transport`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.153849600s  INFO prepare_target{force=false package_id=tokio-test v0.4.5 target="tokio_test"}: cargo::core::compiler::fingerprint: fingerprint error for tokio-test v0.4.5/Check { test: false }/TargetInner { ..: lib_target("tokio_test", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\tokio-test-0.4.5\\src\\lib.rs", Edition2021) }
+   0.153867700s  INFO prepare_target{force=false package_id=tokio-test v0.4.5 target="tokio_test"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\tokio-test-30409161e6b92663\lib-tokio_test`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_libgit2_prerelease
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: git_midx_writer_dump
+  18: git_filter_source_repo
+  19: git_midx_writer_dump
+  20: BaseThreadInitThunk
+  21: RtlUserThreadStart
+   0.154556700s  INFO prepare_target{force=false package_id=tokio-stream v0.1.18 target="tokio_stream"}: cargo::core::compiler::fingerprint: fingerprint error for tokio-stream v0.1.18/Check { test: false }/TargetInner { ..: lib_target("tokio_stream", ["lib"], "C:\\Users\\aitsi\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\tokio-stream-0.1.18\\src\\lib.rs", Edition2021) }
+   0.154576700s  INFO prepare_target{force=false package_id=tokio-stream v0.1.18 target="tokio_stream"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\aitsi\ComLock\comlock-transport\target\debug\.fingerprint\tokio-stream-fe4d1ad65afa34e3\lib-tokio_stream`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_filter_source_repo
+  12: git_filter_source_repo
+  13: git_libgit2_prerelease
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: <unknown>
+  18: git_midx_writer_dump
+  19: git_filter_source_repo
+  20: git_midx_writer_dump
+  21: BaseThreadInitThunk
+  22: RtlUserThreadStart
+    Checking ppv-lite86 v0.2.21
+    Checking universal-hash v0.5.1
+    Checking cipher v0.4.4
+    Checking digest v0.10.7
+    Checking tokio v1.49.0
+    Checking serde v1.0.228
+    Checking x25519-dalek v2.0.1
+    Checking polyval v0.6.2
+    Checking ctr v0.9.2
+    Checking aes v0.8.4
+    Checking hmac v0.12.1
+    Checking sha2 v0.10.9
+    Checking ghash v0.5.1
+    Checking hkdf v0.12.4
+    Checking rand_chacha v0.3.1
+    Checking bincode v1.3.3
+    Checking rand v0.8.5
+    Checking aes-gcm-siv v0.11.1
+    Checking aes-gcm v0.10.3
+    Checking comlock-crypto v0.1.0 (C:\Users\aitsi\ComLock\comlock-crypto)
+    Checking rand_distr v0.4.3
+    Checking tokio-stream v0.1.18
+    Checking comlock-transport v0.1.0 (C:\Users\aitsi\ComLock\comlock-transport)
+    Checking tokio-test v0.4.5
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.93s
