@@ -29,6 +29,7 @@ Thumbs.db
 *.pem
 *.keystore
 *.jks
+keystore_base64.txt
 
 # Ignore Nested Landing Page Repo
 comlock-landing/

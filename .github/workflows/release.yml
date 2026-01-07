@@ -63,61 +63,32 @@ jobs:
         working-directory: ./comlock-app
         run: npm ci
 
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 -d > $GITHUB_WORKSPACE/comlock.keystore
+
       - name: Build Android APK
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/comlock.keystore
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         with:
           projectPath: ./comlock-app
           tagName: ${{ github.ref_name }}
           releaseName: 'ComLock ${{ github.ref_name }}'
           releaseBody: 'See the assets to download this version and install.'
-          modKey: ${{ secrets.ANDROID_KEYSTORE }}
           args: android build --apk
 
-  # ===========================================================================
-  # iOS BUILD
-  # ===========================================================================
-  build-ios:
-    runs-on: macos-latest
-    needs: build-web
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: aarch64-apple-ios,x86_64-apple-ios
-
-      - name: Install dependencies
-        working-directory: ./comlock-app
-        run: npm ci
-
-      - name: Build iOS IPA
-        uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_MOBILE_PROVISIONING_PROFILE: ${{ secrets.APPLE_MOBILE_PROVISIONING_PROFILE }}
-        with:
-          projectPath: ./comlock-app
-          tagName: ${{ github.ref_name }}
-          releaseName: 'ComLock ${{ github.ref_name }}'
-          releaseBody: 'See the assets to download this version and install.'
-          args: ios build
 
   # ===========================================================================
   # CREATE RELEASE
   # ===========================================================================
   create-release:
     runs-on: ubuntu-latest
-    needs: [build-web, build-android, build-ios]
+    needs: [build-web, build-android]
     steps:
       - uses: actions/download-artifact@v3
         with:
@@ -130,4 +101,3 @@ jobs:
           files: |
             comlock-web-*.zip
             comlock-app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk
-            comlock-app/src-tauri/gen/apple/build/Release-iphoneos/comlock_app.ipa
