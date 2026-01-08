@@ -35,8 +35,9 @@ invite.txt
 **/secrets/
 **/credentials/
 
-# Documentation (keep private)
+# Documentation (keep private except README)
 *.md
+!README.md
 
 # Ignore Nested Landing Page Repo
 comlock-landing/
