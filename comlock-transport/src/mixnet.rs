@@ -6,10 +6,10 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use tokio::sync::{mpsc, RwLock};
+use tokio::sync::{RwLock, mpsc};
 use tokio::time::{Duration, Instant};
 
-use crate::sphinx::{SphinxPacket, PACKET_SIZE};
+use crate::sphinx::SphinxPacket;
 use crate::{MixNode, NodeId, Result, Route, TransportError};
 
 /// Configuration for the mix client.
@@ -114,11 +114,7 @@ impl MixClient {
     ///
     /// The message is wrapped in a Sphinx packet and routed through
     /// randomly selected nodes in each layer.
-    pub async fn send_message(
-        &self,
-        payload: &[u8],
-        recipient_mailbox: &Mailbox,
-    ) -> Result<()> {
+    pub async fn send_message(&self, payload: &[u8], recipient_mailbox: &Mailbox) -> Result<()> {
         // Select a random route
         let route = self.select_route(recipient_mailbox).await?;
 

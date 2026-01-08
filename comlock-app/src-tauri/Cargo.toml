@@ -50,3 +50,12 @@ zeroize = { version = "1.8", features = ["derive"] }
 
 # AES-GCM encryption for secure storage
 aes-gcm = "0.10"
+
+# Production crypto (Phase 1)
+x25519-dalek = { version = "2.0", features = ["static_secrets"] }
+bip39 = "2.0"
+argon2 = "0.5"
+ed25519-dalek = { version = "2.1", features = ["rand_core"] }
+
+# Post-quantum cryptography (ML-KEM-1024/Kyber)
+ml-kem = "0.2"

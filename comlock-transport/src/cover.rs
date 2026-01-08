@@ -4,14 +4,14 @@
 //! traffic analysis attacks. Maintains constant traffic patterns
 //! regardless of actual user activity.
 
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 use rand_distr::{Distribution, Exp};
 use tokio::sync::mpsc;
-use tokio::time::{Duration, Instant};
+use tokio::time::Duration;
 
 use crate::sphinx::SphinxPacket;
 use crate::{MixNode, Result, Route, TransportError};
@@ -161,8 +161,7 @@ impl CoverTrafficGenerator {
     /// Get current statistics.
     pub fn stats(&self) -> CoverStats {
         let battery = self.battery_level.load(Ordering::SeqCst) as u8;
-        let degraded =
-            self.config.battery_saver && battery < self.config.battery_threshold;
+        let degraded = self.config.battery_saver && battery < self.config.battery_threshold;
 
         CoverStats {
             packets_sent: self.packets_sent.load(Ordering::SeqCst),
@@ -322,8 +321,14 @@ mod tests {
 
     #[test]
     fn test_anonymity_budget() {
-        assert!(AnonymityBudget::Low.packets_per_second() < AnonymityBudget::Medium.packets_per_second());
-        assert!(AnonymityBudget::Medium.packets_per_second() < AnonymityBudget::Max.packets_per_second());
+        assert!(
+            AnonymityBudget::Low.packets_per_second()
+                < AnonymityBudget::Medium.packets_per_second()
+        );
+        assert!(
+            AnonymityBudget::Medium.packets_per_second()
+                < AnonymityBudget::Max.packets_per_second()
+        );
     }
 
     #[test]

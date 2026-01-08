@@ -26,10 +26,12 @@
 #![warn(clippy::all)]
 
 pub mod cover;
+pub mod katzenpost;
 pub mod mixnet;
 pub mod sphinx;
 
 pub use cover::{AnonymityBudget, CoverTrafficGenerator};
+pub use katzenpost::{ConnectionStatus, KatzenpostClient, KatzenpostConfig, MixnetMessage};
 pub use mixnet::{Mailbox, MixClient, MixClientConfig};
 pub use sphinx::{SphinxHeader, SphinxPacket, PACKET_SIZE};
 

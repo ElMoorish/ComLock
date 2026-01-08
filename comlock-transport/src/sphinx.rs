@@ -4,11 +4,10 @@
 //! All packets are padded to a fixed size (32KB) to prevent traffic analysis.
 
 use aes_gcm::{
-    aead::{Aead, KeyInit},
     Aes256Gcm, Nonce,
+    aead::{Aead, KeyInit},
 };
 use hkdf::Hkdf;
-use rand::RngCore;
 use sha2::Sha256;
 use x25519_dalek::{PublicKey, StaticSecret};
 
@@ -359,7 +358,7 @@ impl SphinxPacket {
             _ => {
                 return Err(TransportError::SphinxError(
                     "Unknown routing command".into(),
-                ))
+                ));
             }
         };
 

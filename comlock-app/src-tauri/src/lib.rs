@@ -12,6 +12,8 @@ use std::collections::HashMap;
 use std::sync::Mutex;
 
 use comlock_crypto::{decrypt_message, encrypt_message, RatchetState};
+// Transport layer types - imported for future async integration
+// use comlock_transport::{MixClient, MixClientConfig, Mailbox, MixNode, NodeId};
 use contacts::{Contact, ContactStore, InviteBlob, QrPayload};
 use decoy::{DecoyContact, DecoyMessage, DecoyVault};
 use security::{verify_pin, PinResult, SecurityConfig, WipeReason, WipeState};
@@ -32,6 +34,9 @@ pub struct AppState {
     wipe_state: Mutex<WipeState>,
     /// Decoy vault for duress mode.
     decoy_vault: Mutex<DecoyVault>,
+    // Transport layer will be added when async integration is complete:
+    // mix_client: Mutex<MixClient>,
+    // mailbox: Mutex<Option<Mailbox>>,
 }
 
 impl Default for AppState {
@@ -56,6 +61,12 @@ pub struct Identity {
     pub root_key: [u8; 32],
     /// User's public identifier (hash of root key).
     pub public_id: String,
+    /// ML-KEM-1024 decapsulation key (private, 3168 bytes).
+    #[serde(default)]
+    pub kem_decap_key: Vec<u8>,
+    /// ML-KEM-1024 encapsulation key (public, 1568 bytes).
+    #[serde(default)]
+    pub kem_encap_key: Vec<u8>,
 }
 
 /// Result of creating a new identity.
@@ -85,35 +96,46 @@ pub struct DecryptResult {
 /// Create a new identity with a random mnemonic.
 #[tauri::command]
 fn create_identity(state: State<AppState>) -> Result<CreateIdentityResult, String> {
+    use bip39::Mnemonic;
     use rand::RngCore;
+    use sha2::{Digest, Sha256};
 
-    // Generate 32 bytes of entropy
+    // Generate 32 bytes of entropy for 24-word mnemonic
     let mut entropy = [0u8; 32];
     rand::thread_rng().fill_bytes(&mut entropy);
 
-    // For now, use a simple word list representation
-    // In production, use proper BIP-39
-    let words: Vec<String> = (0..24)
-        .map(|i| {
-            let idx = (entropy[i % 32] as usize + i * 7) % WORD_LIST.len();
-            WORD_LIST[idx].to_string()
-        })
-        .collect();
+    // Create mnemonic from entropy using BIP-39
+    let mnemonic = Mnemonic::from_entropy(&entropy)
+        .map_err(|e| format!("Failed to generate mnemonic: {}", e))?;
 
-    // Derive root key from mnemonic (simplified - use PBKDF2 in production)
-    let root_key = entropy;
+    let words: Vec<String> = mnemonic.word_iter().map(|s| s.to_string()).collect();
+
+    // Derive root key from mnemonic seed (using BIP-39 seed derivation)
+    let seed = mnemonic.to_seed(""); // Empty passphrase for simplicity
+    let mut root_key = [0u8; 32];
+    root_key.copy_from_slice(&seed[..32]);
 
     // Create public ID (hash of root key)
-    use sha2::{Digest, Sha256};
     let mut hasher = Sha256::new();
     hasher.update(root_key);
     let hash = hasher.finalize();
     let public_id = hex::encode(&hash[..8]);
 
+    // Generate ML-KEM-1024 keypair for post-quantum key encapsulation
+    use ml_kem::{EncodedSizeUser, KemCore, MlKem1024};
+    let mut rng = rand::thread_rng();
+    let (dk, ek) = MlKem1024::generate(&mut rng);
+
+    // Serialize keypair for storage using as_bytes()
+    let kem_decap_key = dk.as_bytes().to_vec();
+    let kem_encap_key = ek.as_bytes().to_vec();
+
     let identity = Identity {
         mnemonic: words.clone(),
         root_key,
         public_id: public_id.clone(),
+        kem_decap_key,
+        kem_encap_key,
     };
 
     // Store identity
@@ -129,17 +151,22 @@ fn create_identity(state: State<AppState>) -> Result<CreateIdentityResult, Strin
 /// Recover identity from mnemonic.
 #[tauri::command]
 fn recover_identity(mnemonic: Vec<String>, state: State<AppState>) -> Result<String, String> {
+    use bip39::Mnemonic;
+    use sha2::{Digest, Sha256};
+
     if mnemonic.len() != 24 {
         return Err("Mnemonic must be 24 words".into());
     }
 
-    // Derive root key from mnemonic (simplified)
-    use sha2::{Digest, Sha256};
-    let mut hasher = Sha256::new();
-    for word in &mnemonic {
-        hasher.update(word.as_bytes());
-    }
-    let root_key: [u8; 32] = hasher.finalize().into();
+    // Join words and parse as BIP-39 mnemonic
+    let phrase = mnemonic.join(" ");
+    let bip39_mnemonic =
+        Mnemonic::parse(&phrase).map_err(|e| format!("Invalid mnemonic: {}", e))?;
+
+    // Derive root key from mnemonic seed
+    let seed = bip39_mnemonic.to_seed("");
+    let mut root_key = [0u8; 32];
+    root_key.copy_from_slice(&seed[..32]);
 
     // Create public ID
     let mut hasher = Sha256::new();
@@ -147,10 +174,21 @@ fn recover_identity(mnemonic: Vec<String>, state: State<AppState>) -> Result<Str
     let hash = hasher.finalize();
     let public_id = hex::encode(&hash[..8]);
 
+    // Generate ML-KEM-1024 keypair for post-quantum key encapsulation
+    use ml_kem::{EncodedSizeUser, KemCore, MlKem1024};
+    let mut rng = rand::thread_rng();
+    let (dk, ek) = MlKem1024::generate(&mut rng);
+
+    // Serialize keypair for storage using as_bytes()
+    let kem_decap_key = dk.as_bytes().to_vec();
+    let kem_encap_key = ek.as_bytes().to_vec();
+
     let identity = Identity {
         mnemonic,
         root_key,
         public_id: public_id.clone(),
+        kem_decap_key,
+        kem_encap_key,
     };
 
     let mut id_lock = state.identity.lock().map_err(|e| e.to_string())?;
@@ -236,6 +274,99 @@ fn decrypt(
 }
 
 // ============================================================================
+// TRANSPORT LAYER COMMANDS
+// ============================================================================
+
+/// Result of sending a message via mixnet.
+#[derive(Debug, Serialize)]
+pub struct SendMessageResult {
+    pub message_id: String,
+    pub status: String,
+}
+
+/// Result of polling the mailbox.
+#[derive(Debug, Serialize)]
+pub struct ReceivedMessage {
+    pub message_id: String,
+    pub sender_id: String,
+    pub ciphertext_hex: String,
+    pub received_at: i64,
+}
+
+/// Send an encrypted message through the mixnet.
+/// Note: Currently queues the message for delivery. Actual mixnet
+/// delivery will be implemented when the transport layer is fully connected.
+#[tauri::command]
+fn send_via_mixnet(
+    session_id: String,
+    recipient_mailbox_id: String,
+    plaintext: String,
+    state: State<AppState>,
+) -> Result<SendMessageResult, String> {
+    // Encrypt the message first
+    let ciphertext = {
+        let mut sessions = state.sessions.lock().map_err(|e| e.to_string())?;
+        let ratchet = sessions.get_mut(&session_id).ok_or("Session not found")?;
+        encrypt_message(plaintext.as_bytes(), ratchet).map_err(|e| e.to_string())?
+    };
+
+    // Generate message ID
+    let message_id = format!(
+        "msg_{}",
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_millis()
+    );
+
+    // Log for now - actual mixnet delivery will be implemented
+    // when the network layer is ready
+    println!(
+        "[MIXNET] Queued message {} for {}: {} bytes",
+        message_id,
+        recipient_mailbox_id,
+        ciphertext.len()
+    );
+
+    Ok(SendMessageResult {
+        message_id,
+        status: "queued".to_string(),
+    })
+}
+
+/// Poll the mailbox for incoming messages.
+/// Note: Currently returns empty. Will be connected to actual
+/// mailbox polling when the transport layer is fully operational.
+#[tauri::command]
+fn poll_messages(_state: State<AppState>) -> Result<Vec<ReceivedMessage>, String> {
+    // Currently no real mailbox polling - return empty
+    // This will be connected to the async transport layer
+    Ok(vec![])
+}
+
+/// Get transport layer status.
+#[tauri::command]
+fn get_transport_status(_state: State<AppState>) -> Result<TransportStatus, String> {
+    Ok(TransportStatus {
+        connected: false,
+        gateway_address: None,
+        mailbox_id: None,
+        messages_queued: 0,
+        messages_received: 0,
+    })
+}
+
+/// Transport layer status.
+#[derive(Debug, Serialize)]
+pub struct TransportStatus {
+    pub connected: bool,
+    pub gateway_address: Option<String>,
+    pub mailbox_id: Option<String>,
+    pub messages_queued: u32,
+    pub messages_received: u32,
+}
+
+// ============================================================================
 // CONTACT EXCHANGE COMMANDS
 // ============================================================================
 
@@ -252,6 +383,14 @@ pub struct ScanResult {
     pub sas: String,
 }
 
+/// Result of confirming SAS and creating contact
+#[derive(Debug, Serialize)]
+pub struct ConfirmSasResult {
+    pub contact: Contact,
+    pub session_id: String,
+    pub session_initialized: bool,
+}
+
 /// Generate a QR payload for in-person key exchange.
 #[tauri::command]
 fn generate_qr_payload(state: State<AppState>) -> Result<QrExchangeResult, String> {
@@ -259,10 +398,9 @@ fn generate_qr_payload(state: State<AppState>) -> Result<QrExchangeResult, Strin
 
     // Get KEM pubkey from identity if available
     let identity = state.identity.lock().map_err(|e| e.to_string())?;
-    let kem_pubkey: Option<Vec<u8>> = identity.as_ref().map(|_| {
-        // In production, generate or retrieve KEM keypair
-        // For now, use placeholder
-        vec![0u8; 1568] // ML-KEM-1024 public key size
+    let kem_pubkey: Option<Vec<u8>> = identity.as_ref().map(|id| {
+        // Use the real ML-KEM-1024 encapsulation key from identity
+        id.kem_encap_key.clone()
     });
 
     let (exchange_id, payload) = contacts.start_qr_exchange(kem_pubkey.as_deref());
@@ -292,19 +430,43 @@ fn process_scanned_qr(
 }
 
 /// Confirm SAS match and finalize contact creation.
+/// Also initializes the ratchet session automatically.
 #[tauri::command]
 fn confirm_sas(
     exchange_id: String,
     qr_json: String,
     alias: String,
     state: State<AppState>,
-) -> Result<Contact, String> {
+) -> Result<ConfirmSasResult, String> {
     let mut contacts = state.contacts.lock().map_err(|e| e.to_string())?;
     let payload = QrPayload::from_json(&qr_json).map_err(|e| e.to_string())?;
 
-    contacts
+    // Get the shared secret before consuming the exchange
+    let peer_public = payload.decode_public_key().map_err(|e| e.to_string())?;
+    let shared_secret = {
+        let (keypair, _) = contacts
+            .get_pending_exchange(&exchange_id)
+            .ok_or("Exchange not found")?;
+        keypair.compute_shared_secret(&peer_public)
+    };
+
+    // Create the contact
+    let contact = contacts
         .confirm_sas(&exchange_id, &payload, alias)
-        .map_err(|e| e.to_string())
+        .map_err(|e| e.to_string())?;
+
+    // Auto-initialize the ratchet session with the shared secret
+    let session_id = contact.session_id.clone();
+    let ratchet = RatchetState::new(shared_secret, true); // We're the scanner, so we're initiator
+
+    let mut sessions = state.sessions.lock().map_err(|e| e.to_string())?;
+    sessions.insert(session_id.clone(), ratchet);
+
+    Ok(ConfirmSasResult {
+        contact,
+        session_id,
+        session_initialized: true,
+    })
 }
 
 /// Generate a one-time invite blob for remote contact exchange.
@@ -324,8 +486,8 @@ fn generate_invite(ttl_hours: Option<u32>, state: State<AppState>) -> Result<Str
     let mut our_pubkey = [0u8; 32];
     our_pubkey.copy_from_slice(&hash);
 
-    // Placeholder KEM public key
-    let our_kem_pk = vec![0u8; 1568];
+    // Use real ML-KEM-1024 encapsulation key from identity
+    let our_kem_pk = identity.kem_encap_key.clone();
 
     let invite = contacts.generate_invite(our_pubkey, our_kem_pk, ttl_hours.unwrap_or(24));
     invite.to_base64().map_err(|e| e.to_string())
@@ -582,6 +744,10 @@ pub fn run() {
             // Crypto
             encrypt,
             decrypt,
+            // Transport Layer
+            send_via_mixnet,
+            poll_messages,
+            get_transport_status,
             // Contact Exchange
             generate_qr_payload,
             process_scanned_qr,

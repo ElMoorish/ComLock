@@ -36,63 +36,42 @@ pub struct Contact {
 }
 
 /// Ephemeral X25519 keypair for key exchange (zeroized on drop)
-#[derive(ZeroizeOnDrop)]
 pub struct EphemeralKeypair {
-    #[zeroize(skip)]
     pub public_key: [u8; 32],
-    secret_key: [u8; 32],
+    secret_key: x25519_dalek::StaticSecret,
 }
 
 impl EphemeralKeypair {
-    /// Generate a new random ephemeral keypair
+    /// Generate a new random ephemeral keypair using real X25519
     pub fn generate() -> Self {
-        let mut secret_key = [0u8; 32];
-        rand::thread_rng().fill_bytes(&mut secret_key);
-
-        // Clamp the secret key for X25519
-        secret_key[0] &= 248;
-        secret_key[31] &= 127;
-        secret_key[31] |= 64;
-
-        // Derive public key (simplified - use x25519-dalek in production)
-        let public_key = Self::derive_public_key(&secret_key);
+        use rand::rngs::OsRng;
+        let secret_key = x25519_dalek::StaticSecret::random_from_rng(OsRng);
+        let public_key = x25519_dalek::PublicKey::from(&secret_key);
 
         Self {
-            public_key,
+            public_key: public_key.to_bytes(),
             secret_key,
         }
     }
 
-    /// Derive public key from secret key (placeholder - use proper X25519)
-    fn derive_public_key(secret: &[u8; 32]) -> [u8; 32] {
-        // In production, use x25519_dalek::PublicKey::from(&StaticSecret)
-        // For now, hash the secret as a placeholder
-        let mut hasher = Sha256::new();
-        hasher.update(b"X25519_PK_DERIVE");
-        hasher.update(secret);
-        let hash = hasher.finalize();
-        let mut pk = [0u8; 32];
-        pk.copy_from_slice(&hash);
-        pk
-    }
-
-    /// Compute shared secret with peer's public key
+    /// Compute shared secret with peer's public key using real X25519 ECDH
     pub fn compute_shared_secret(&self, peer_public: &[u8; 32]) -> [u8; 32] {
-        // In production, use x25519(self.secret_key, peer_public)
-        // For now, hash both keys together as a placeholder
-        let mut hasher = Sha256::new();
-        hasher.update(b"X25519_SHARED_SECRET");
-        hasher.update(self.secret_key);
-        hasher.update(peer_public);
-        let hash = hasher.finalize();
-        let mut shared = [0u8; 32];
-        shared.copy_from_slice(&hash);
-        shared
+        let peer_pk = x25519_dalek::PublicKey::from(*peer_public);
+        let shared = self.secret_key.diffie_hellman(&peer_pk);
+        shared.to_bytes()
     }
 
-    /// Get the secret key (for SAS generation)
-    pub fn secret_key(&self) -> &[u8; 32] {
-        &self.secret_key
+    /// Get the raw secret key bytes (for SAS generation)
+    pub fn secret_key(&self) -> [u8; 32] {
+        self.secret_key.to_bytes()
+    }
+}
+
+// Implement Zeroize manually since StaticSecret already zeroizes on drop
+impl Drop for EphemeralKeypair {
+    fn drop(&mut self) {
+        self.public_key.zeroize();
+        // StaticSecret automatically zeroizes on drop
     }
 }
 
@@ -228,7 +207,46 @@ pub struct InviteBlob {
 }
 
 impl InviteBlob {
-    /// Create a new invite blob
+    /// Create a new invite blob with Ed25519 signature
+    pub fn new_signed(
+        signing_key: &ed25519_dalek::SigningKey,
+        sender_pubkey: [u8; 32],
+        sender_kem_pk: Vec<u8>,
+        ttl_seconds: i64,
+    ) -> Self {
+        use ed25519_dalek::Signer;
+
+        let mut mailbox_id = [0u8; 32];
+        rand::thread_rng().fill_bytes(&mut mailbox_id);
+
+        let now = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs() as i64;
+        let expiry = now + ttl_seconds;
+
+        // Create message to sign: version || sender_pubkey || mailbox_id || expiry
+        let mut message = Vec::with_capacity(1 + 32 + 32 + 8);
+        message.push(1u8); // version
+        message.extend_from_slice(&sender_pubkey);
+        message.extend_from_slice(&mailbox_id);
+        message.extend_from_slice(&expiry.to_le_bytes());
+
+        // Sign with Ed25519
+        let sig = signing_key.sign(&message);
+        let signature: [u8; 64] = sig.to_bytes();
+
+        Self {
+            version: 1,
+            sender_pubkey,
+            sender_kem_pk,
+            mailbox_id,
+            expiry,
+            signature,
+        }
+    }
+
+    /// Create a new invite blob (unsigned - for backwards compatibility)
     pub fn new(sender_pubkey: [u8; 32], sender_kem_pk: Vec<u8>, ttl_seconds: i64) -> Self {
         let mut mailbox_id = [0u8; 32];
         rand::thread_rng().fill_bytes(&mut mailbox_id);
@@ -238,7 +256,7 @@ impl InviteBlob {
             .unwrap()
             .as_secs() as i64;
 
-        // Placeholder signature (use Ed25519 in production)
+        // Unsigned blob (signature is zeroed)
         let signature = [0u8; 64];
 
         Self {
@@ -248,6 +266,25 @@ impl InviteBlob {
             mailbox_id,
             expiry: now + ttl_seconds,
             signature,
+        }
+    }
+
+    /// Verify the Ed25519 signature
+    pub fn verify_signature(&self, verifying_key: &ed25519_dalek::VerifyingKey) -> bool {
+        use ed25519_dalek::Verifier;
+
+        // Reconstruct message
+        let mut message = Vec::with_capacity(1 + 32 + 32 + 8);
+        message.push(self.version);
+        message.extend_from_slice(&self.sender_pubkey);
+        message.extend_from_slice(&self.mailbox_id);
+        message.extend_from_slice(&self.expiry.to_le_bytes());
+
+        // Verify signature
+        if let Ok(sig) = ed25519_dalek::Signature::from_slice(&self.signature) {
+            verifying_key.verify(&message, &sig).is_ok()
+        } else {
+            false
         }
     }
 
@@ -431,6 +468,11 @@ impl ContactStore {
     /// Get a contact by ID
     pub fn get_contact(&self, id: &str) -> Option<&Contact> {
         self.contacts.get(id)
+    }
+
+    /// Get a pending exchange (for reading shared secret before confirm)
+    pub fn get_pending_exchange(&self, exchange_id: &str) -> Option<&(EphemeralKeypair, i64)> {
+        self.pending_exchanges.get(exchange_id)
     }
 
     /// Delete a contact and securely zeroize its data

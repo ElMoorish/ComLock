@@ -32,15 +32,19 @@ impl SecureStorage {
         Self { config_path }
     }
 
-    /// Derive encryption key from PIN
+    /// Derive encryption key from PIN using Argon2id
     fn derive_key(pin: &str) -> [u8; 32] {
-        // Use PBKDF2 or Argon2 in production
-        // For now, use salted SHA-256
-        let mut hasher = Sha256::new();
-        hasher.update(b"COMLOCK_STORAGE_KEY_V1");
-        hasher.update(pin.as_bytes());
-        hasher.update(b"COMLOCK_STORAGE_KEY_V1");
-        hasher.finalize().into()
+        use argon2::Argon2;
+
+        // Fixed salt for deterministic key derivation
+        // Note: In production, consider using random salts stored with ciphertext
+        let salt = b"comlock_storage_salt_v2!";
+
+        let mut key = [0u8; 32];
+        Argon2::default()
+            .hash_password_into(pin.as_bytes(), salt, &mut key)
+            .expect("Argon2 hashing failed");
+        key
     }
 
     /// Save security config encrypted with PIN
@@ -138,16 +142,236 @@ impl SecureStorage {
 
     /// Delete all app data securely
     pub fn wipe_all_data(&self) -> Result<(), StorageError> {
-        // Delete config
-        self.secure_delete()?;
+        // Get app data directory from config path
+        let app_dir = self.config_path.parent();
 
-        // In production, also delete:
-        // - Contact database
-        // - Message cache
-        // - Key material
-        // - Any other sensitive files
+        // Delete config file securely
+        if self.config_path.exists() {
+            self.secure_delete()?;
+        }
+
+        // Delete other sensitive files in app directory
+        if let Some(dir) = app_dir {
+            // Securely delete contacts database
+            let contacts_file = dir.join("contacts.db");
+            if contacts_file.exists() {
+                Self::secure_delete_file(&contacts_file)?;
+            }
+
+            // Securely delete message cache
+            let messages_file = dir.join("messages.cache");
+            if messages_file.exists() {
+                Self::secure_delete_file(&messages_file)?;
+            }
+
+            // Securely delete key material
+            let keys_file = dir.join("keys.enc");
+            if keys_file.exists() {
+                Self::secure_delete_file(&keys_file)?;
+            }
+
+            // Delete identity file
+            let identity_file = dir.join("identity.enc");
+            if identity_file.exists() {
+                Self::secure_delete_file(&identity_file)?;
+            }
+
+            // Delete mailbox credentials
+            let mailbox_file = dir.join("mailbox.enc");
+            if mailbox_file.exists() {
+                Self::secure_delete_file(&mailbox_file)?;
+            }
+        }
 
         Ok(())
+    }
+
+    /// Securely delete a specific file by overwriting with zeros
+    fn secure_delete_file(path: &std::path::Path) -> Result<(), StorageError> {
+        use std::fs::{File, OpenOptions};
+        use std::io::Write;
+
+        if let Ok(metadata) = std::fs::metadata(path) {
+            let size = metadata.len() as usize;
+            // Overwrite with zeros
+            if let Ok(mut file) = OpenOptions::new().write(true).open(path) {
+                let zeros = vec![0u8; size];
+                let _ = file.write_all(&zeros);
+                let _ = file.sync_all();
+            }
+        }
+
+        // Delete the file
+        std::fs::remove_file(path).map_err(|_| StorageError::IoError)?;
+        Ok(())
+    }
+
+    // ========================================================================
+    // ENCRYPTED CONTACT PERSISTENCE (Optional)
+    // ========================================================================
+
+    /// Save contacts encrypted with PIN (optional persistence)
+    pub fn save_contacts(
+        &self,
+        contacts: &[crate::contacts::Contact],
+        pin: &str,
+    ) -> Result<(), StorageError> {
+        let contacts_path = self
+            .config_path
+            .parent()
+            .map(|p| p.join("contacts.enc"))
+            .ok_or(StorageError::IoError)?;
+
+        let json =
+            serde_json::to_string(contacts).map_err(|_| StorageError::SerializationFailed)?;
+
+        let key = Self::derive_key(pin);
+        let mut nonce_bytes = [0u8; 12];
+        rand::thread_rng().fill_bytes(&mut nonce_bytes);
+        let nonce = Nonce::from_slice(&nonce_bytes);
+
+        let cipher = Aes256Gcm::new_from_slice(&key).map_err(|_| StorageError::EncryptionFailed)?;
+        let ciphertext = cipher
+            .encrypt(nonce, json.as_bytes())
+            .map_err(|_| StorageError::EncryptionFailed)?;
+
+        let mut file = File::create(&contacts_path).map_err(|_| StorageError::IoError)?;
+        file.write_all(&nonce_bytes)
+            .map_err(|_| StorageError::IoError)?;
+        file.write_all(&ciphertext)
+            .map_err(|_| StorageError::IoError)?;
+
+        Ok(())
+    }
+
+    /// Load and decrypt contacts
+    pub fn load_contacts(&self, pin: &str) -> Result<Vec<crate::contacts::Contact>, StorageError> {
+        let contacts_path = self
+            .config_path
+            .parent()
+            .map(|p| p.join("contacts.enc"))
+            .ok_or(StorageError::IoError)?;
+
+        if !contacts_path.exists() {
+            return Ok(Vec::new()); // No saved contacts
+        }
+
+        let mut data = Vec::new();
+        File::open(&contacts_path)
+            .map_err(|_| StorageError::NotFound)?
+            .read_to_end(&mut data)
+            .map_err(|_| StorageError::IoError)?;
+
+        if data.len() < 12 {
+            return Err(StorageError::CorruptedData);
+        }
+
+        let (nonce_bytes, ciphertext) = data.split_at(12);
+        let nonce = Nonce::from_slice(nonce_bytes);
+
+        let key = Self::derive_key(pin);
+        let cipher = Aes256Gcm::new_from_slice(&key).map_err(|_| StorageError::DecryptionFailed)?;
+        let json = cipher
+            .decrypt(nonce, ciphertext)
+            .map_err(|_| StorageError::DecryptionFailed)?;
+
+        let contacts: Vec<crate::contacts::Contact> =
+            serde_json::from_slice(&json).map_err(|_| StorageError::CorruptedData)?;
+
+        Ok(contacts)
+    }
+
+    /// Delete contacts file securely
+    pub fn delete_contacts(&self) -> Result<(), StorageError> {
+        let contacts_path = self
+            .config_path
+            .parent()
+            .map(|p| p.join("contacts.enc"))
+            .ok_or(StorageError::IoError)?;
+
+        if contacts_path.exists() {
+            Self::secure_delete_file(&contacts_path)?;
+        }
+        Ok(())
+    }
+
+    // ========================================================================
+    // SECURE IDENTITY STORAGE
+    // ========================================================================
+
+    /// Save identity encrypted with PIN
+    pub fn save_identity(&self, identity: &crate::Identity, pin: &str) -> Result<(), StorageError> {
+        let identity_path = self
+            .config_path
+            .parent()
+            .map(|p| p.join("identity.enc"))
+            .ok_or(StorageError::IoError)?;
+
+        let json =
+            serde_json::to_string(identity).map_err(|_| StorageError::SerializationFailed)?;
+
+        let key = Self::derive_key(pin);
+        let mut nonce_bytes = [0u8; 12];
+        rand::thread_rng().fill_bytes(&mut nonce_bytes);
+        let nonce = Nonce::from_slice(&nonce_bytes);
+
+        let cipher = Aes256Gcm::new_from_slice(&key).map_err(|_| StorageError::EncryptionFailed)?;
+        let ciphertext = cipher
+            .encrypt(nonce, json.as_bytes())
+            .map_err(|_| StorageError::EncryptionFailed)?;
+
+        let mut file = File::create(&identity_path).map_err(|_| StorageError::IoError)?;
+        file.write_all(&nonce_bytes)
+            .map_err(|_| StorageError::IoError)?;
+        file.write_all(&ciphertext)
+            .map_err(|_| StorageError::IoError)?;
+
+        Ok(())
+    }
+
+    /// Load and decrypt identity
+    pub fn load_identity(&self, pin: &str) -> Result<Option<crate::Identity>, StorageError> {
+        let identity_path = self
+            .config_path
+            .parent()
+            .map(|p| p.join("identity.enc"))
+            .ok_or(StorageError::IoError)?;
+
+        if !identity_path.exists() {
+            return Ok(None); // No saved identity
+        }
+
+        let mut data = Vec::new();
+        File::open(&identity_path)
+            .map_err(|_| StorageError::NotFound)?
+            .read_to_end(&mut data)
+            .map_err(|_| StorageError::IoError)?;
+
+        if data.len() < 12 {
+            return Err(StorageError::CorruptedData);
+        }
+
+        let (nonce_bytes, ciphertext) = data.split_at(12);
+        let nonce = Nonce::from_slice(nonce_bytes);
+
+        let key = Self::derive_key(pin);
+        let cipher = Aes256Gcm::new_from_slice(&key).map_err(|_| StorageError::DecryptionFailed)?;
+        let json = cipher
+            .decrypt(nonce, ciphertext)
+            .map_err(|_| StorageError::DecryptionFailed)?;
+
+        let identity: crate::Identity =
+            serde_json::from_slice(&json).map_err(|_| StorageError::CorruptedData)?;
+
+        Ok(Some(identity))
+    }
+
+    /// Check if identity file exists
+    pub fn has_saved_identity(&self) -> bool {
+        self.config_path
+            .parent()
+            .map(|p| p.join("identity.enc").exists())
+            .unwrap_or(false)
     }
 }
 
