@@ -12,6 +12,7 @@
 *.aab
 *.ipa
 *.dSYM
+*.idsig
 
 # OS
 .DS_Store
@@ -22,7 +23,7 @@ Thumbs.db
 .idea
 *.swp
 
-# Environment
+# Environment & Secrets
 .env
 .env.local
 *.key
@@ -30,6 +31,12 @@ Thumbs.db
 *.keystore
 *.jks
 keystore_base64.txt
+invite.txt
+**/secrets/
+**/credentials/
+
+# Documentation (keep private)
+*.md
 
 # Ignore Nested Landing Page Repo
 comlock-landing/
